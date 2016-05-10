@@ -1,0 +1,11 @@
+/usr/bin/gunicorn_pecan		--	gen_context(system_u:object_r:gunicorn_exec_t,s0)
+/usr/bin/ceph-installer		--	gen_context(system_u:object_r:gunicorn_exec_t,s0)
+/usr/bin/celery		--	gen_context(system_u:object_r:gunicorn_exec_t,s0)
+
+/usr/lib/systemd/system-preset/80-ceph-installer.*		--	gen_context(system_u:object_r:gunicorn_unit_file_t,s0)
+
+/usr/lib/systemd/system/ceph-installer-celery.*		--	gen_context(system_u:object_r:gunicorn_unit_file_t,s0)
+
+/usr/lib/systemd/system/ceph-installer.*	--	gen_context(system_u:object_r:gunicorn_unit_file_t,s0)
+
+/var/lib/ceph-installer(/.*)?		gen_context(system_u:object_r:gunicorn_var_lib_t,s0)
