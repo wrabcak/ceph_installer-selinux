@@ -1,0 +1,50 @@
+policy_module(ceph_installer, 1.0.0)
+
+########################################
+#
+# Declarations
+#
+
+type ceph_installer_t;
+type ceph_installer_exec_t;
+init_daemon_domain(ceph_installer_t, ceph_installer_exec_t)
+
+type ceph_installer_var_lib_t;
+files_type(ceph_installer_var_lib_t)
+
+type ceph_installer_tmp_t;
+files_tmp_file(ceph_installer_tmp_t)
+
+type ceph_installer_unit_file_t;
+systemd_unit_file(ceph_installer_unit_file_t)
+
+########################################
+#
+# ceph_installer local policy
+#
+allow ceph_installer_t self:fifo_file rw_fifo_file_perms;
+allow ceph_installer_t self:unix_stream_socket create_stream_socket_perms;
+allow ceph_installer_t self:tcp_socket create_stream_socket_perms;
+
+manage_dirs_pattern(ceph_installer_t, ceph_installer_var_lib_t, ceph_installer_var_lib_t)
+manage_files_pattern(ceph_installer_t, ceph_installer_var_lib_t, ceph_installer_var_lib_t)
+manage_lnk_files_pattern(ceph_installer_t, ceph_installer_var_lib_t, ceph_installer_var_lib_t)
+files_var_lib_filetrans(ceph_installer_t, ceph_installer_var_lib_t, { dir file lnk_file })
+
+manage_files_pattern(ceph_installer_t, ceph_installer_tmp_t, ceph_installer_tmp_t)
+files_tmp_filetrans(ceph_installer_t, ceph_installer_tmp_t, { file })
+
+kernel_read_system_state(ceph_installer_t)
+
+corecmd_exec_shell(ceph_installer_t)
+corecmd_exec_bin(ceph_installer_t)
+
+corenet_tcp_bind_generic_node(ceph_installer_t)
+corenet_tcp_connect_amqp_port(ceph_installer_t)
+#corenet_tcp_bind_intermapper_port(ceph_installer_t)
+
+libs_exec_ldconfig(ceph_installer_t)
+
+optional_policy(`
+    apache_search_config(ceph_installer_t)
+')
